@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Football Game - COLEN RORWANA STADIUM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 8px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 100vw;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            max-height: calc(100vh - 80px);
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 8px;
+            color: white;
+            width: 100%;
+        }
+
+        .game-header h1 {
+            font-size: clamp(0.9em, 2.5vw, 1.2em);
+            margin-bottom: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .stadium-name {
+            font-size: clamp(0.7em, 2vw, 0.9em);
+            color: #ffd700;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .scoreboard {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 8px;
+            color: white;
+            font-size: clamp(0.7em, 2vw, 0.9em);
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .team-name {
+            font-size: clamp(0.6em, 1.8vw, 0.8em);
+            margin-bottom: 2px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .score {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 8px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .score:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .field-container {
+            width: 100%;
+            max-width: 95vw;
+            aspect-ratio: 3/1;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .field {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #4CAF50 0%, #45a049 100%);
+            border: 3px solid white;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .field::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: white;
+            transform: translateX(-50%);
+        }
+
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 15%;
+            aspect-ratio: 1;
+            border: 2px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .goal {
+            position: absolute;
+            width: 3%;
+            height: 40%;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid white;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .goal-left {
+            left: -1.5%;
+        }
+
+        .goal-right {
+            right: -1.5%;
+        }
+
+        .player {
+            position: absolute;
+            width: 4%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            transition: all 0.15s ease;
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        .player::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 75%;
+            height: 75%;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .player1 {
+            background: #ff4444;
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.6);
+        }
+
+        .player1::after {
+            background: #ff6666;
+        }
+
+        .player2 {
+            background: #4444ff;
+            box-shadow: 0 0 15px rgba(68, 68, 255, 0.6);
+        }
+
+        .player2::after {
+            background: #6666ff;
+        }
+
+        .ball {
+            position: absolute;
+            width: 2.5%;
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+            z-index: 5;
+            transition: none;
+        }
+
+        .ball::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60%;
+            height: 60%;
+            border: 2px solid #333;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .controls {
+            margin-top: 8px;
+            text-align: center;
+            color: white;
+            font-size: clamp(0.6em, 1.8vw, 0.8em);
+            width: 100%;
+        }
+
+        .controls p {
+            margin: 1px 0;
+        }
+
+        .controls kbd {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1px 3px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-family: monospace;
+            font-size: 0.7em;
+        }
+
+        .mobile-controls {
+            display: none;
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .mobile-controls.active {
+            display: block;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 6px;
+            justify-content: center;
+        }
+
+        .control-btn {
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:active {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0.95);
+        }
+
+        .kick-btn {
+            width: 50px;
+            height: 35px;
+            background: #ff4444;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.7em;
+        }
+
+        .kick-btn:active {
+            background: #cc3333;
+            transform: scale(0.95);
+        }
+
+        .kick-btn.player2 {
+            background: #4444ff;
+        }
+
+        .kick-btn.player2:active {
+            background: #3333cc;
+        }
+
+        .game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .game-over-content {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            animation: bounceIn 0.5s ease;
+            max-width: 90vw;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .game-over-content h2 {
+            font-size: clamp(1.2em, 4vw, 2em);
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .play-again {
+            padding: 10px 25px;
+            font-size: clamp(0.9em, 3vw, 1.1em);
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-again:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .power-meter {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30%;
+            height: 3%;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid white;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .power-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4CAF50, #ffeb3b, #ff4444);
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(1.2em, 5vw, 2.5em);
+            font-weight: bold;
+            color: #ff4444;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            pointer-events: none;
+            animation: messagePulse 1s ease-in-out;
+        }
+
+        @keyframes messagePulse {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        /* Footer Styles */
+        .footer-bg {
+            background: linear-gradient(135deg, rgba(30, 60, 114, 0.7) 0%, rgba(42, 82, 152, 0.7) 100%);
+            backdrop-filter: blur(5px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bg:hover {
+            background: linear-gradient(135deg, rgba(30, 60, 114, 0.8) 0%, rgba(42, 82, 152, 0.8) 100%);
+        }
+
+        .red-heart {
+            color: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                display: none;
+            }
+            
+            .mobile-controls {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1>⚽ FOOTBALL MATCH ⚽</h1>
+            <div class="stadium-name">🏟️ COLEN RORWANA STADIUM 🏟️</div>
+        </header>
+        
+        <section class="scoreboard">
+            <div class="score">
+                <div class="team-name">MBHEKEBHEKE FC</div>
+                <div><span id="score1">0</span></div>
+            </div>
+            <div class="score">
+                <div class="team-name">MADUMANE FC</div>
+                <div><span id="score2">0</span></div>
+            </div>
+        </section>
+        
+        <div class="field-container">
+            <main class="field" id="field">
+                <div class="center-circle"></div>
+                <div class="goal goal-left"></div>
+                <div class="goal goal-right"></div>
+                <div class="player player1" id="player1"></div>
+                <div class="player player2" id="player2"></div>
+                <div class="ball" id="ball"></div>
+                <div class="power-meter" id="powerMeter">
+                    <div class="power-fill" id="powerFill"></div>
+                </div>
+            </main>
+        </div>
+        
+        <section class="controls">
+            <p><strong>MBHEKEBHEKE FC:</strong> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> to move, <kbd>Space</kbd> to kick</p>
+            <p><strong>MADUMANE FC:</strong> <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> to move, <kbd>Enter</kbd> to kick</p>
+        </section>
+    </div>
+    
+    <div class="mobile-controls" id="mobileControls">
+        <div class="control-group">
+            <div></div>
+            <button class="control-btn" data-player="1" data-direction="up">↑</button>
+            <div></div>
+        </div>
+        <div class="control-group">
+            <button class="control-btn" data-player="1" data-direction="left">←</button>
+            <button class="kick-btn player1" data-player="1" data-action="kick">KICK</button>
+            <button class="control-btn" data-player="1" data-direction="right">→</button>
+        </div>
+        <div class="control-group">
+            <div></div>
+            <button class="control-btn" data-player="1" data-direction="down">↓</button>
+            <div></div>
+        </div>
+        
+        <div style="height: 10px;"></div>
+        
+        <div class="control-group">
+            <div></div>
+            <button class="control-btn" data-player="2" data-direction="up">↑</button>
+            <div></div>
+        </div>
+        <div class="control-group">
+            <button class="control-btn" data-player="2" data-direction="left">←</button>
+            <button class="kick-btn player2" data-player="2" data-action="kick">KICK</button>
+            <button class="control-btn" data-player="2" data-direction="right">→</button>
+        </div>
+        <div class="control-group">
+            <div></div>
+            <button class="control-btn" data-player="2" data-direction="down">↓</button>
+            <div></div>
+        </div>
+    </div>
+    
+    <div class="game-over" id="gameOver">
+        <div class="game-over-content">
+            <h2 id="winnerText">MBHEKEBHEKE FC Wins!</h2>
+            <button class="play-again" onclick="resetGame()">Play Again</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 py-6 transition-colors duration-300 footer-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-xs text-gray-200">
+                Developed with <span class="red-heart">❤️</span> by Siyamthanda Amahle Buthelezi
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Game elements
+        const field = document.getElementById('field');
+        const player1 = document.getElementById('player1');
+        const player2 = document.getElementById('player2');
+        const ball = document.getElementById('ball');
+        const score1Element = document.getElementById('score1');
+        const score2Element = document.getElementById('score2');
+        const gameOverModal = document.getElementById('gameOver');
+        const winnerText = document.getElementById('winnerText');
+        const powerMeter = document.getElementById('powerMeter');
+        const powerFill = document.getElementById('powerFill');
+        const mobileControls = document.getElementById('mobileControls');
+
+        // Check if mobile
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+        
+        if (isMobile) {
+            mobileControls.classList.add('active');
+        }
+
+        // Game state
+        let fieldWidth, fieldHeight;
+        const goalWidthRatio = 0.03;
+        const goalHeightRatio = 0.4;
+        const maxScore = 5;
+
+        let player1Pos = { x: 0, y: 0 };
+        let player2Pos = { x: 0, y: 0 };
+        let ballPos = { x: 0, y: 0 };
+        let ballVel = { x: 0, y: 0 };
+        let score1 = 0;
+        let score2 = 0;
+        let gameRunning = true;
+        let keys = {};
+        let chargingKick = false;
+        let kickPower = 0;
+        let kickingPlayer = null;
+        let mobileTouches = {};
+        let lastTouch = null; // Track who last touched the ball
+
+        // Team names
+        const team1Name = "MBHEKEBHEKE FC";
+        const team2Name = "MADUMANE FC";
+
+        // Player settings - reduced for realistic movement
+        const playerSpeed = 0.008; // Significantly reduced for smaller steps
+        const ballFriction = 0.985; // Increased friction for more realistic ball movement
+        const maxBallSpeed = 0.035; // Reduced max ball speed
+        const kickPowerIncrement = 2; // Normal power charging
+        const maxKickPower = 100;
+
+        // Initialize field dimensions
+        function initFieldDimensions() {
+            const fieldRect = field.getBoundingClientRect();
+            fieldWidth = fieldRect.width;
+            fieldHeight = fieldRect.height;
+            
+            player1Pos = { x: fieldWidth * 0.15, y: fieldHeight * 0.5 };
+            player2Pos = { x: fieldWidth * 0.85, y: fieldHeight * 0.5 };
+            ballPos = { x: fieldWidth * 0.5, y: fieldHeight * 0.5 };
+            
+            initPositions();
+        }
+
+        // Initialize positions
+        function initPositions() {
+            const playerSize = fieldWidth * 0.04;
+            const ballSize = fieldWidth * 0.025;
+            
+            player1.style.left = (player1Pos.x - playerSize / 2) + 'px';
+            player1.style.top = (player1Pos.y - playerSize / 2) + 'px';
+            player2.style.left = (player2Pos.x - playerSize / 2) + 'px';
+            player2.style.top = (player2Pos.y - playerSize / 2) + 'px';
+            ball.style.left = (ballPos.x - ballSize / 2) + 'px';
+            ball.style.top = (ballPos.y - ballSize / 2) + 'px';
+        }
+
+        // Show message on field
+        function showMessage(text, duration = 2000) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.textContent = text;
+            field.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, duration);
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (isMobile) return;
+            keys[e.key.toLowerCase()] = true;
+            
+            // Start charging kick
+            if (e.key === ' ' && !chargingKick && canKickBall(player1Pos)) {
+                startKick('player1');
+            } else if (e.key === 'Enter' && !chargingKick && canKickBall(player2Pos)) {
+                startKick('player2');
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (isMobile) return;
+            keys[e.key.toLowerCase()] = false;
+            
+            // Release kick
+            if (e.key === ' ' && chargingKick && kickingPlayer === 'player1') {
+                performKick(player1Pos);
+            } else if (e.key === 'Enter' && chargingKick && kickingPlayer === 'player2') {
+                performKick(player2Pos);
+            }
+        });
+
+        // Mobile controls
+        document.querySelectorAll('.control-btn').forEach(btn => {
+            btn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const player = btn.dataset.player;
+                const direction = btn.dataset.direction;
+                mobileTouches[`${player}-${direction}`] = true;
+            });
+            
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                const player = btn.dataset.player;
+                const direction = btn.dataset.direction;
+                mobileTouches[`${player}-${direction}`] = false;
+            });
+        });
+
+        document.querySelectorAll('.kick-btn').forEach(btn => {
+            btn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const player = btn.dataset.player;
+                const playerPos = player === '1' ? player1Pos : player2Pos;
+                
+                if (!chargingKick && canKickBall(playerPos)) {
+                    startKick(`player${player}`);
+                }
+            });
+            
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                const player = btn.dataset.player;
+                const playerPos = player === '1' ? player1Pos : player2Pos;
+                
+                if (chargingKick && kickingPlayer === `player${player}`) {
+                    performKick(playerPos);
+                }
+            });
+        });
+
+        // Check if player can kick the ball (must be adjacent, not on top)
+        function canKickBall(playerPos) {
+            const dx = playerPos.x - ballPos.x;
+            const dy = playerPos.y - ballPos.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const playerSize = fieldWidth * 0.04;
+            const ballSize = fieldWidth * 0.025;
+            const minDistance = (playerSize / 2) + (ballSize / 2) + (playerSize * 0.3); // Add some space
+            const maxDistance = (playerSize / 2) + (ballSize / 2) + (playerSize * 1.5); // Max distance for kicking
+            
+            return distance >= minDistance && distance <= maxDistance;
+        }
+
+        // Check collision between two circles
+        function checkCollision(pos1, pos2, radius1, radius2) {
+            const dx = pos1.x - pos2.x;
+            const dy = pos1.y - pos2.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            return distance < radius1 + radius2;
+        }
+
+        // Resolve collision between two objects
+        function resolveCollision(pos1, pos2, radius1, radius2) {
+            const dx = pos2.x - pos1.x;
+            const dy = pos2.y - pos1.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance === 0) return; // Prevent division by zero
+            
+            // Calculate overlap
+            const overlap = radius1 + radius2 - distance;
+            
+            // Normalize direction
+            const nx = dx / distance;
+            const ny = dy / distance;
+            
+            // Separate objects
+            const separationX = nx * overlap * 0.5;
+            const separationY = ny * overlap * 0.5;
+            
+            return { separationX, separationY };
+        }
+
+        // Position player next to ball if too close
+        function positionPlayerNextToBall(playerPos, isPlayer1) {
+            const dx = playerPos.x - ballPos.x;
+            const dy = playerPos.y - ballPos.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const playerSize = fieldWidth * 0.04;
+            const ballSize = fieldWidth * 0.025;
+            const minDistance = (playerSize / 2) + (ballSize / 2) + (playerSize * 0.3);
+            
+            if (distance < minDistance && distance > 0) {
+                // Calculate direction from ball to player
+                const nx = dx / distance;
+                const ny = dy / distance;
+                
+                // Position player at minimum distance from ball
+                playerPos.x = ballPos.x + nx * minDistance;
+                playerPos.y = ballPos.y + ny * minDistance;
+                
+                // Keep player within bounds
+                playerPos.x = Math.max(playerSize / 2, Math.min(fieldWidth - playerSize / 2, playerPos.x));
+                playerPos.y = Math.max(playerSize / 2, Math.min(fieldHeight - playerSize / 2, playerPos.y));
+                
+                return true;
+            }
+            return false;
+        }
+
+        // Start charging kick
+        function startKick(player) {
+            chargingKick = true;
+            kickingPlayer = player;
+            kickPower = 0;
+            powerMeter.style.display = 'block';
+            
+            const chargeInterval = setInterval(() => {
+                if (!chargingKick) {
+                    clearInterval(chargeInterval);
+                    return;
+                }
+                
+                kickPower = Math.min(kickPower + kickPowerIncrement, maxKickPower);
+                powerFill.style.width = kickPower + '%';
+            }, 20); // Normal charging speed
+        }
+
+        // Perform kick
+        function performKick(playerPos) {
+            if (!chargingKick) return;
+            
+            chargingKick = false;
+            powerMeter.style.display = 'none';
+            
+            // Set last touch
+            lastTouch = kickingPlayer;
+            
+            const dx = ballPos.x - playerPos.x;
+            const dy = ballPos.y - playerPos.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 0) {
+                const power = (kickPower / maxKickPower) * maxBallSpeed * fieldWidth;
+                ballVel.x = (dx / distance) * power;
+                ballVel.y = (dy / distance) * power;
+            }
+            
+            kickPower = 0;
+            powerFill.style.width = '0%';
+        }
+
+        // Update player positions
+        function updatePlayers() {
+            const playerSize = fieldWidth * 0.04;
+            const moveSpeed = playerSpeed * fieldWidth;
+            
+            // Store old positions
+            const oldPlayer1Pos = { ...player1Pos };
+            const oldPlayer2Pos = { ...player2Pos };
+            
+            // Calculate new positions
+            let newPlayer1Pos = { ...player1Pos };
+            let newPlayer2Pos = { ...player2Pos };
+            
+            // Player 1 controls
+            if (!isMobile) {
+                // Keyboard controls
+                if (keys['w'] && newPlayer1Pos.y > playerSize / 2) newPlayer1Pos.y -= moveSpeed;
+                if (keys['s'] && newPlayer1Pos.y < fieldHeight - playerSize / 2) newPlayer1Pos.y += moveSpeed;
+                if (keys['a'] && newPlayer1Pos.x > playerSize / 2) newPlayer1Pos.x -= moveSpeed;
+                if (keys['d'] && newPlayer1Pos.x < fieldWidth - playerSize / 2) newPlayer1Pos.x += moveSpeed;
+            } else {
+                // Mobile controls
+                if (mobileTouches['1-up'] && newPlayer1Pos.y > playerSize / 2) newPlayer1Pos.y -= moveSpeed;
+                if (mobileTouches['1-down'] && newPlayer1Pos.y < fieldHeight - playerSize / 2) newPlayer1Pos.y += moveSpeed;
+                if (mobileTouches['1-left'] && newPlayer1Pos.x > playerSize / 2) newPlayer1Pos.x -= moveSpeed;
+                if (mobileTouches['1-right'] && newPlayer1Pos.x < fieldWidth - playerSize / 2) newPlayer1Pos.x += moveSpeed;
+            }
+            
+            // Player 2 controls
+            if (!isMobile) {
+                // Keyboard controls
+                if (keys['arrowup'] && newPlayer2Pos.y > playerSize / 2) newPlayer2Pos.y -= moveSpeed;
+                if (keys['arrowdown'] && newPlayer2Pos.y < fieldHeight - playerSize / 2) newPlayer2Pos.y += moveSpeed;
+                if (keys['arrowleft'] && newPlayer2Pos.x > playerSize / 2) newPlayer2Pos.x -= moveSpeed;
+                if (keys['arrowright'] && newPlayer2Pos.x < fieldWidth - playerSize / 2) newPlayer2Pos.x += moveSpeed;
+            } else {
+                // Mobile controls
+                if (mobileTouches['2-up'] && newPlayer2Pos.y > playerSize / 2) newPlayer2Pos.y -= moveSpeed;
+                if (mobileTouches['2-down'] && newPlayer2Pos.y < fieldHeight - playerSize / 2) newPlayer2Pos.y += moveSpeed;
+                if (mobileTouches['2-left'] && newPlayer2Pos.x > playerSize / 2) newPlayer2Pos.x -= moveSpeed;
+                if (mobileTouches['2-right'] && newPlayer2Pos.x < fieldWidth - playerSize / 2) newPlayer2Pos.x += moveSpeed;
+            }
+            
+            // Position players next to ball if too close
+            const player1Repositioned = positionPlayerNextToBall(newPlayer1Pos, true);
+            const player2Repositioned = positionPlayerNextToBall(newPlayer2Pos, false);
+            
+            // Check player-to-player collision
+            const playerRadius = playerSize / 2;
+            if (checkCollision(newPlayer1Pos, newPlayer2Pos, playerRadius, playerRadius)) {
+                const collision = resolveCollision(newPlayer1Pos, newPlayer2Pos, playerRadius, playerRadius);
+                
+                // Apply collision resolution
+                newPlayer1Pos.x -= collision.separationX;
+                newPlayer1Pos.y -= collision.separationY;
+                newPlayer2Pos.x += collision.separationX;
+                newPlayer2Pos.y += collision.separationY;
+                
+                // Keep players within bounds
+                newPlayer1Pos.x = Math.max(playerRadius, Math.min(fieldWidth - playerRadius, newPlayer1Pos.x));
+                newPlayer1Pos.y = Math.max(playerRadius, Math.min(fieldHeight - playerRadius, newPlayer1Pos.y));
+                newPlayer2Pos.x = Math.max(playerRadius, Math.min(fieldWidth - playerRadius, newPlayer2Pos.x));
+                newPlayer2Pos.y = Math.max(playerRadius, Math.min(fieldHeight - playerRadius, newPlayer2Pos.y));
+            }
+            
+            // Update positions
+            player1Pos = newPlayer1Pos;
+            player2Pos = newPlayer2Pos;
+            
+            // Update DOM
+            player1.style.left = (player1Pos.x - playerSize / 2) + 'px';
+            player1.style.top = (player1Pos.y - playerSize / 2) + 'px';
+            player2.style.left = (player2Pos.x - playerSize / 2) + 'px';
+            player2.style.top = (player2Pos.y - playerSize / 2) + 'px';
+        }
+
+        // Update ball physics
+        function updateBall() {
+            const ballSize = fieldWidth * 0.025;
+            const playerSize = fieldWidth * 0.04;
+            const ballRadius = ballSize / 2;
+            const playerRadius = playerSize / 2;
+            
+            // Apply friction
+            ballVel.x *= ballFriction;
+            ballVel.y *= ballFriction;
+            
+            // Stop ball if moving very slowly
+            if (Math.abs(ballVel.x) < 0.05) ballVel.x = 0;
+            if (Math.abs(ballVel.y) < 0.05) ballVel.y = 0;
+            
+            // Update position
+            ballPos.x += ballVel.x;
+            ballPos.y += ballVel.y;
+            
+            // Check ball-to-player collisions
+            if (checkCollision(ballPos, player1Pos, ballRadius, playerRadius)) {
+                const collision = resolveCollision(ballPos, player1Pos, ballRadius, playerRadius);
+                
+                // Move ball away from player
+                ballPos.x += collision.separationX * 2;
+                ballPos.y += collision.separationY * 2;
+                
+                // Bounce ball off player
+                const dx = ballPos.x - player1Pos.x;
+                const dy = ballPos.y - player1Pos.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 0) {
+                    const nx = dx / distance;
+                    const ny = dy / distance;
+                    const speed = Math.sqrt(ballVel.x * ballVel.x + ballVel.y * ballVel.y);
+                    
+                    ballVel.x = nx * speed * 0.8;
+                    ballVel.y = ny * speed * 0.8;
+                }
+                
+                // Set last touch
+                lastTouch = 'player1';
+            }
+            
+            if (checkCollision(ballPos, player2Pos, ballRadius, playerRadius)) {
+                const collision = resolveCollision(ballPos, player2Pos, ballRadius, playerRadius);
+                
+                // Move ball away from player
+                ballPos.x += collision.separationX * 2;
+                ballPos.y += collision.separationY * 2;
+                
+                // Bounce ball off player
+                const dx = ballPos.x - player2Pos.x;
+                const dy = ballPos.y - player2Pos.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 0) {
+                    const nx = dx / distance;
+                    const ny = dy / distance;
+                    const speed = Math.sqrt(ballVel.x * ballVel.x + ballVel.y * ballVel.y);
+                    
+                    ballVel.x = nx * speed * 0.8;
+                    ballVel.y = ny * speed * 0.8;
+                }
+                
+                // Set last touch
+                lastTouch = 'player2';
+            }
+            
+            // Wall collisions
+            if (ballPos.x <= ballRadius || ballPos.x >= fieldWidth - ballRadius) {
+                ballVel.x = -ballVel.x * 0.8;
+                ballPos.x = Math.max(ballRadius, Math.min(fieldWidth - ballRadius, ballPos.x));
+            }
+            
+            if (ballPos.y <= ballRadius || ballPos.y >= fieldHeight - ballRadius) {
+                ballVel.y = -ballVel.y * 0.8;
+                ballPos.y = Math.max(ballRadius, Math.min(fieldHeight - ballRadius, ballPos.y));
+            }
+            
+            // Goal detection
+            const goalWidth = fieldWidth * goalWidthRatio;
+            const goalHeight = fieldHeight * goalHeightRatio;
+            const goalTop = (fieldHeight - goalHeight) / 2;
+            const goalBottom = goalTop + goalHeight;
+            
+            // Left goal (MBHEKEBHEKE FC's goal)
+            if (ballPos.x <= goalWidth && ballPos.y >= goalTop && ballPos.y <= goalBottom) {
+                let isOwnGoal = false;
+                if (lastTouch === 'player1') {
+                    isOwnGoal = true;
+                    showMessage('🚨 OWN GOAL! 🚨');
+                }
+                score2++;
+                score2Element.textContent = score2;
+                checkWinner();
+                resetBall();
+            }
+            
+            // Right goal (MADUMANE FC's goal)
+            if (ballPos.x >= fieldWidth - goalWidth && ballPos.y >= goalTop && ballPos.y <= goalBottom) {
+                let isOwnGoal = false;
+                if (lastTouch === 'player2') {
+                    isOwnGoal = true;
+                    showMessage('🚨 OWN GOAL! 🚨');
+                }
+                score1++;
+                score1Element.textContent = score1;
+                checkWinner();
+                resetBall();
+            }
+            
+            // Update DOM
+            ball.style.left = (ballPos.x - ballRadius) + 'px';
+            ball.style.top = (ballPos.y - ballRadius) + 'px';
+        }
+
+        // Reset ball position
+        function resetBall() {
+            ballPos = { x: fieldWidth * 0.5, y: fieldHeight * 0.5 };
+            ballVel = { x: 0, y: 0 };
+            lastTouch = null;
+            initPositions();
+        }
+
+        // Check for winner
+        function checkWinner() {
+            if (score1 >= maxScore) {
+                winnerText.textContent = `${team1Name} Wins! 🎉`;
+                winnerText.style.color = '#ff4444';
+                gameOverModal.style.display = 'flex';
+                gameRunning = false;
+            } else if (score2 >= maxScore) {
+                winnerText.textContent = `${team2Name} Wins! 🎉`;
+                winnerText.style.color = '#4444ff';
+                gameOverModal.style.display = 'flex';
+                gameRunning = false;
+            }
+        }
+
+        // Reset game
+        function resetGame() {
+            score1 = 0;
+            score2 = 0;
+            score1Element.textContent = score1;
+            score2Element.textContent = score2;
+            
+            initFieldDimensions();
+            
+            gameOverModal.style.display = 'none';
+            gameRunning = true;
+        }
+
+        // Game loop
+        function gameLoop() {
+            if (gameRunning) {
+                updatePlayers();
+                updateBall();
+            }
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            initFieldDimensions();
+        });
+
+        // Initialize game
+        initFieldDimensions();
+        gameLoop();
+    </script>
+</body>
+</html>
