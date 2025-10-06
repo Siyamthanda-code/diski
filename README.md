@@ -1,4 +1,4 @@
-# ⚽ Football Game - COLEN RORWANA STADIUM
+# ⚽ Football Game:Goalie-Diski
 
 A fun and interactive 2-player football game featuring MBHEKEBHEKE FC vs MADUMANE FC at the iconic COLEN RORWANA STADIUM.
 
